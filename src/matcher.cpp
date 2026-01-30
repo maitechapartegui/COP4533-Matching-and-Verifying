@@ -39,7 +39,7 @@ int main(int argc, char** argv){
     vector<Hospital> allHospitals;
     vector<Student> allStudents;
     // store the empty one
-    queue<Hospital> emptyHospitals;
+    queue<Hospital> unmatchedHospitals;
 
     // for every hospital there is
     for(int i = 0; i < n; i++){
@@ -55,7 +55,7 @@ int main(int argc, char** argv){
                 // cout << hospitalPrefs [i][j];
         }
         //add to the empty hospital list the hospital object
-        emptyHospitals.push(allHospitals[i]);
+        unmatchedHospitals.push(allHospitals[i]);
         cout << "\n";
     }
 
@@ -78,32 +78,55 @@ int main(int argc, char** argv){
 
     // START THE ALGORITHMN
     //create the lists of hospitals
-    vector<Hospital> unmatchedHospitals(n);
+    // vector<Hospital> unmatchedHospitals(n);
     int hosProposing =0;
 
     while (unmatchedHospitals.size() !=0){
-        Hospital currentHos = unmatchedHospitals[hosProposing];
-        // grab what their choice we are checking should initalize to 1
-        int currPrefIndex = currentHos.matchedStudentIndex;
-        //THIS IS AN ERROR NEED TO FIND 
-        //ideally this would refer to the student class 
-        // if current student in this index is not matched then 
-        if (currentHos.preferenceList[currPrefIndex]){
-            // then match/add them to the hospital
-            //update the student object with the hospital details
+        // grab the front of the queue
+        Hospital currHospital = unmatchedHospitals.front();
+        unmatchedHospitals.pop();
+
+        // grab the curr hospital index tracker aka wherer they are in their choices 1st 2nd etc
+        // this index would be initilized to 0 becauese obvs want the first one
+        int currPrefIndex = currHospital.matchedStudentIndex;
+        // grab the studentNum that is the first choice
+        int currStudentNum = currHospital.preferenceList[currPrefIndex];
+        
+        Student currStudent = allStudents[currStudentNum];
+
+        if (!currStudent.isMatched){
+            // if current student is NOT matched then match them to the hospital
+            //update hospital matching details
+            currHospital.gotAMatch(currStudentNum,currPrefIndex);
+            // update student object with hospital details
+            currStudent.gotAMatch(currHospital.hosNum);
         }
+        // if the student IS matched
         else {
-            //check who the student is currently matched with and use the orderMap to compare values
-            //if curr hospital value is less than the matched hosptial value 
-                //updated the og matched hospital details and revert to original
-                //update student object with current hospital details
-                //update current hospital with student details
-                // add og matched hospital back to empty hospital vector
-            //else
-                // 
+            //check who the student is currently matched with and compare this compare function int he class
+            if (currStudent.betterMatchCheck(currHospital.hosNum)) {
+                // current hospital IS the better match
+                // need to update the original hospotal student is matched with and add to to teh queue
+                Hospital oldMatchHospital = allHospitals[currStudent.currentMatchedHosNum];
+                oldMatchHospital.undoMatch();
+                unmatchedHospitals.push(oldMatchHospital);
+                //update student details
+                currStudent.gotAMatch(currHospital.hosNum);
+                //update curr hos details
+                currHospital.gotAMatch(currStudentNum,currPrefIndex);
+                // then need to remove the curr from queue
+                
+            }
+            else{
+                //current hospital is NOT the better match and is therefore rejected
+                // so we just need to try the next student waiting for the nexr round
+                //add back to queue
+                unmatchedHospitals.push(currHospital);
+            }
         }
 
-
+        currPrefIndex ++;
+        
     }
     
 }
