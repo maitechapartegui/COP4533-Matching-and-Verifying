@@ -28,14 +28,22 @@ int main(int argc, char** argv){
     if(n <= 0){
         throw runtime_error("Invalid 'n' value");
     }
-    // TODO: Need to ensure number of students and hospitals is equal AND handle n=1
+    // if (!(in >> n)) {
+    //   // empty file
+    //     return 0;
+    // }
+    //TODO: n=1 validation and add validation for equal h and students
 
-
-
-    // removed this sorry 
-    // Create data storage structures
-    // vector<vector<int>> hospitalPrefs(n, vector<int>(n));
-    // vector<vector<int>> studentPrefs(n, vector<int>(n));
+    //create the output file
+    //use the name to be the same
+    string outputFile;
+    size_t lastDot = filename.find_last_of(".");
+    if (lastDot != string::npos) {
+        outputFile = filename.substr(0,lastDot) + ".out";
+    }
+    else {
+        outputFile = filename + ".out";
+    }
 
     // need to store all the objects
     vector<Hospital> allHospitals(n);
@@ -130,5 +138,16 @@ int main(int argc, char** argv){
         currPrefIndex++;
         currHospital->prefIndex = currPrefIndex;
     }
-    
+
+    ofstream out(outputFile);
+    if (!out) {
+        throw runtime_error("couldnt create the output file");
+    }
+
+    for (int i = 0; i < n; i++) {
+        out << allHospitals[i].hosNum << " " << allHospitals[i].matchedStudent + 1 << endl;
+    }
+
+    out.close();
+    return 0;
 }
