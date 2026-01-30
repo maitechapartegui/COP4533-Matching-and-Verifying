@@ -5,6 +5,7 @@ using namespace std;
 
 struct Hospital {
     int hosNum;
+    int hosIndex;
     // always starts off as false
     bool isMatched = false;
     // should we make this hold the objects or just match the names?
@@ -12,11 +13,11 @@ struct Hospital {
     //this is gonna correspond to the studentNum of the student class
     int matchedStudent = -1;
     // so basically if they got their first choice second choice etc so we dont have to go throught their preferenec list again 
-    int matchedStudentIndex = 0;
+    int prefIndex = 0;
 
     void gotAMatch(int student, int studentIndex){
         matchedStudent=student;
-        matchedStudentIndex = studentIndex;
+        prefIndex = studentIndex;
         isMatched = true;
     }
 
@@ -30,13 +31,13 @@ struct Hospital {
 struct Student {
     int studentNum;
     bool isMatched = false;
-    int currentMatchedHosNum= -1;
+    int matchedHosIndex= -1;
     // basically the index hospital and then the value will be the ranking
     // prefList[HOSPITAL1] = 1 AKA rank 
     vector<int> hospitalOrder;
 
-    bool betterMatchCheck (int currHospital){
-        if(hospitalOrder[currHospital] < hospitalOrder[currentMatchedHosNum]){
+    bool betterMatchCheck (int currHospitalIndex){
+        if(hospitalOrder[currHospitalIndex] < hospitalOrder[matchedHosIndex]){
             // if it is a better match return true
             return true;
             // need to edit the new match details in the main
@@ -45,8 +46,8 @@ struct Student {
             return false;
         }
     }
-    void gotAMatch(int hospital){
-        currentMatchedHosNum = hospital;
+    void gotAMatch(int hospitalIndex){
+        matchedHosIndex = hospitalIndex;
         isMatched = true;
     }
 };
