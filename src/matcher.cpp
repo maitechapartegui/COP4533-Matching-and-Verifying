@@ -1,8 +1,89 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <queue>
+#include <set>
 #include "hospitalStudents.cpp"
 using namespace std;
+
+bool checkValidity(vector<Hospital>& hospitals, vector<Student>& students) {
+    int n = hospitals.size();
+
+    // track matches
+    set<int> seenStudents;   // student indices matched to hospital
+    set<int> seenHospitals;  // hospital indices that are matched
+
+    // each hospital must be matched to exactly one valid student
+    for (int i = 0; i < n; i++) {
+        const Hospital& hos = hospitals[i];
+
+        if (!hos.isMatched || hos.matchedStudent < 0 || hos.matchedStudent >= n) {
+            cout << "Hospital is unmatched or has invalid matchedStudent." << endl;
+            return false;
+        }
+        seenHospitals.insert(i);
+        seenStudents.insert(hos.matchedStudent);
+    }
+
+    // each student must appear exactly once across all hospital matches
+    if (seenStudents.size() != n) {
+        cout << "Invalid matching: a student is missing or matched more than once." << endl;
+        return false;
+    }
+
+    // each student object must have a valid pair
+    for (int i = 0; i < n; i++) {
+        Student& s = students[i];
+        if (!s.isMatched || s.matchedHosIndex < 0 || s.matchedHosIndex >= n) {
+            cout << "Student is unmatched or has invalid matchedHosIndex.";
+            return false;
+        }
+    }
+
+    // no duplicates and perfect one-to-one matching
+    if ((int)seenHospitals.size() != n || (int)seenStudents.size() != n || seenHospitals.size() != seenStudents.size()) {
+        cout << "Invalid matching: duplicate or missing hospital/student detected." << endl;
+        return false;
+    }
+
+    return true;
+}
+
+// check for blocked pairs
+bool checkStability(vector<Hospital>& hospitals, vector<Student>& students) {
+    int n = hospitals.size();
+
+    for (int i = 0; i < n; i++) {
+        int currS = hospitals[i].matchedStudent;
+
+        // find rank of current matched student in hospital's preference list
+        int currPos = -1;
+        for (int pos = 0; pos < n; pos++) {
+            if (hospitals[i].preferenceList[pos] == currS) {
+                currPos = pos;
+                break;
+            }
+        }
+
+        if (currPos == -1) {
+            cout << "Stability check failed: hospital does not rank its matched student." << endl;
+            return false;
+        }
+
+        // check if students hospital prefers another h more than its current match
+        for (int pos = 0; pos < currPos; pos++) {
+            int s = hospitals[i].preferenceList[pos];
+            int sCurrH = students[s].matchedHosIndex;
+
+            // check if student prefer hospital h over current hospital
+            if (students[s].hospitalOrder[i] < students[s].hospitalOrder[sCurrH]) {
+                cout << "Blocking pair found." << endl;
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 
 // Read in input file
@@ -137,6 +218,11 @@ int main(int argc, char** argv){
         }
         currPrefIndex++;
         currHospital->prefIndex = currPrefIndex;
+
+    }
+
+    for(int i = 0; i < n; i++){
+        cout << allHospitals[i].hosNum << " " << allHospitals[i].matchedStudent + 1 << endl;
     }
 
     ofstream out(outputFile);
