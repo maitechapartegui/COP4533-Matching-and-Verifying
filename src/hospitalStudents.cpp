@@ -9,26 +9,34 @@ struct Hospital {
     bool isMatched = false;
     // should we make this hold the objects or just match the names?
     vector<int> preferenceList;
-    int matchedStudent =0;
+    //this is gonna correspond to the studentNum of the student class
+    int matchedStudent = -1;
     // so basically if they got their first choice second choice etc so we dont have to go throught their preferenec list again 
-    int matchedStudentIndex = 1;
+    int matchedStudentIndex = 0;
 
     void gotAMatch(int student, int studentIndex){
-        matchedStudent=0;
+        matchedStudent=student;
         matchedStudentIndex = studentIndex;
+        isMatched = true;
+    }
+
+    void undoMatch(){
+        isMatched = false;
+        matchedStudent = -1;
+        // need to leave student index as is cause we need to mvoe onto the next choice
     }
 };
 
 struct Student {
     int studentNum;
     bool isMatched = false;
-    int currentMatchedHos= 0;
+    int currentMatchedHosNum= -1;
     // basically the index hospital and then the value will be the ranking
     // prefList[HOSPITAL1] = 1 AKA rank 
     vector<int> hospitalOrder;
 
-    bool betterMatch (int currHospital){
-        if(hospitalOrder[currHospital] < hospitalOrder[currentMatchedHos]){
+    bool betterMatchCheck (int currHospital){
+        if(hospitalOrder[currHospital] < hospitalOrder[currentMatchedHosNum]){
             // if it is a better match return true
             return true;
             // need to edit the new match details in the main
@@ -37,5 +45,8 @@ struct Student {
             return false;
         }
     }
-    
+    void gotAMatch(int hospital){
+        currentMatchedHosNum = hospital;
+        isMatched = true;
+    }
 };
