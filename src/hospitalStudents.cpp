@@ -10,19 +10,19 @@ struct Hospital {
     // should we make this hold the objects or just match the names?
     vector<int> preferenceList;
     //this is gonna correspond to the studentNum of the student class
-    int matchedStudent = 0;
+    int matchedStudent = -1;
     // so basically if they got their first choice second choice etc so we dont have to go throught their preferenec list again 
     int matchedStudentIndex = 0;
 
     void gotAMatch(int student, int studentIndex){
-        matchedStudent=0;
+        matchedStudent=student;
         matchedStudentIndex = studentIndex;
         isMatched = true;
     }
 
     void undoMatch(){
         isMatched = false;
-        matchedStudent = 0;
+        matchedStudent = -1;
         // need to leave student index as is cause we need to mvoe onto the next choice
     }
 };
@@ -30,7 +30,7 @@ struct Hospital {
 struct Student {
     int studentNum;
     bool isMatched = false;
-    int currentMatchedHosNum= 0;
+    int currentMatchedHosNum= -1;
     // basically the index hospital and then the value will be the ranking
     // prefList[HOSPITAL1] = 1 AKA rank 
     vector<int> hospitalOrder;

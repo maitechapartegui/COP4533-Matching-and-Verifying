@@ -28,6 +28,8 @@ int main(int argc, char** argv){
     if(n <= 0){
         throw runtime_error("Invalid 'n' value");
     }
+    // TODO: Need to ensure number of students and hospitals is equal AND handle n=1
+
 
 
     // removed this sorry 
@@ -36,10 +38,10 @@ int main(int argc, char** argv){
     // vector<vector<int>> studentPrefs(n, vector<int>(n));
 
     // need to store all the objects
-    vector<Hospital> allHospitals;
-    vector<Student> allStudents;
+    vector<Hospital> allHospitals(n);
+    vector<Student> allStudents(n);
     // store the empty one
-    queue<Hospital> unmatchedHospitals;
+    queue<int> unmatchedHospitals;
 
     // for every hospital there is
     for(int i = 0; i < n; i++){
@@ -55,13 +57,14 @@ int main(int argc, char** argv){
                 // cout << hospitalPrefs [i][j];
         }
         //add to the empty hospital list the hospital object
-        unmatchedHospitals.push(allHospitals[i]);
+        unmatchedHospitals.push(i);
         cout << "\n";
     }
 
     // do the same for the students
     for(int i = 0; i < n; i++){
         allStudents[i].studentNum = i+1;
+        allStudents[i].hospitalOrder.resize(n);
         for(int j =0; j < n; j++){
                 int hospitalNum;
                 in >> hospitalNum;
@@ -83,7 +86,8 @@ int main(int argc, char** argv){
 
     while (unmatchedHospitals.size() !=0){
         // grab the front of the queue
-        Hospital currHospital = unmatchedHospitals.front();
+        int hNum = unmatchedHospitals.front();
+        Hospital &currHospital = allHospitals[hNum];
         unmatchedHospitals.pop();
 
         // grab the curr hospital index tracker aka wherer they are in their choices 1st 2nd etc
@@ -92,7 +96,7 @@ int main(int argc, char** argv){
         // grab the studentNum that is the first choice
         int currStudentNum = currHospital.preferenceList[currPrefIndex];
         
-        Student currStudent = allStudents[currStudentNum];
+        Student &currStudent = allStudents[currStudentNum];
 
         if (!currStudent.isMatched){
             // if current student is NOT matched then match them to the hospital
@@ -104,14 +108,14 @@ int main(int argc, char** argv){
         // if the student IS matched
         else {
             //check who the student is currently matched with and compare this compare function int he class
-            if (currStudent.betterMatchCheck(currHospital.hosNum)) {
+            if (currStudent.betterMatchCheck(hNum)) {
                 // current hospital IS the better match
                 // need to update the original hospotal student is matched with and add to to teh queue
-                Hospital oldMatchHospital = allHospitals[currStudent.currentMatchedHosNum];
+                Hospital &oldMatchHospital = allHospitals[currStudent.currentMatchedHosNum];
                 oldMatchHospital.undoMatch();
-                unmatchedHospitals.push(oldMatchHospital);
+                unmatchedHospitals.push(oldMatchHospital.hosNum);
                 //update student details
-                currStudent.gotAMatch(currHospital.hosNum);
+                currStudent.gotAMatch(hNum);
                 //update curr hos details
                 currHospital.gotAMatch(currStudentNum,currPrefIndex);
                 // then need to remove the curr from queue
@@ -121,12 +125,10 @@ int main(int argc, char** argv){
                 //current hospital is NOT the better match and is therefore rejected
                 // so we just need to try the next student waiting for the nexr round
                 //add back to queue
-                unmatchedHospitals.push(currHospital);
+                unmatchedHospitals.push(hNum);
             }
         }
-
         currPrefIndex ++;
-        
     }
     
 }
