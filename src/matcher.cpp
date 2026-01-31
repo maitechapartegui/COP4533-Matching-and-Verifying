@@ -3,6 +3,7 @@
 #include <vector>
 #include <queue>
 #include <set>
+#include <chrono>
 #include "hospitalStudents.cpp"
 using namespace std;
 
@@ -103,17 +104,17 @@ int main(int argc, char** argv){
         throw runtime_error("Could not open input file");
     }
 
+    //empty file?
+    if (in.peek() == ifstream::traits_type::eof()) {
+        throw runtime_error("empty file");
+    }
+
     int n;
     in >> n;
 
     if(n <= 0){
         throw runtime_error("Invalid 'n' value");
     }
-    // if (!(in >> n)) {
-    //   // empty file
-    //     return 0;
-    // }
-    //TODO: n=1 validation and add validation for equal h and students
 
     //create the output file
     //use the name to be the same
@@ -139,12 +140,15 @@ int main(int argc, char** argv){
         allHospitals[i].hosIndex = i;
         allHospitals[i].hosNum = i+1;
         for(int j =0; j < n; j++){
-                // start grabbing the input into the list
-                int studentNum;
-                in >> studentNum;
-                // need to be studentNum because it need sto start at 0 index
-                allHospitals[i].preferenceList.push_back(studentNum-1);
-                // cout << hospitalPrefs [i][j];
+            // start grabbing the input into the list
+            int studentNum;
+            if (!(in >> studentNum)) {
+                throw runtime_error("umm not an equal amount of student preferences listed");
+            }
+
+            // need to be studentNum because it need sto start at 0 index
+            allHospitals[i].preferenceList.push_back(studentNum-1);
+
         }
         //add to the empty hospital list the hospital object
         unmatchedHospitals.push(&allHospitals[i]);
@@ -156,22 +160,21 @@ int main(int argc, char** argv){
         allStudents[i].studentNum = i+1;
         allStudents[i].hospitalOrder.resize(n);
         for(int j =0; j < n; j++){
-                int hospitalNum;
-                in >> hospitalNum;
-                // basically at hospital number 1 = index in the pref list
-                // aka hospital 1 is in the 2nd index yk?
-                allStudents[i].hospitalOrder[hospitalNum-1] = j;
-                // cout << studentPrefs[i][j];
+            int hospitalNum;
+            if (!(in >> hospitalNum)) {
+                throw runtime_error("umm not an equal amount of hospital preferences listed");
+            }
+            // basically at hospital number 1 = index in the pref list
+            // aka hospital 1 is in the 2nd index yk?
+            allStudents[i].hospitalOrder[hospitalNum-1] = j;
+            // cout << studentPrefs[i][j];
         }
         cout << "\n";
     }
 
-    // // Start matching algorithm logic
-    // vector<vector<int>> pairs(n, vector<int>(2));
 
     // START THE ALGORITHMN
-    //create the lists of hospitals
-    // vector<Hospital> unmatchedHospitals(n);
+    auto start = chrono::high_resolution_clock::now();
 
     while (unmatchedHospitals.size() !=0){
         // grab the front of the queue
@@ -224,6 +227,8 @@ int main(int argc, char** argv){
     for(int i = 0; i < n; i++){
         cout << allHospitals[i].hosNum << " " << allHospitals[i].matchedStudent + 1 << endl;
     }
+    auto end = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
 
     ofstream out(outputFile);
     if (!out) {
@@ -233,7 +238,8 @@ int main(int argc, char** argv){
     for (int i = 0; i < n; i++) {
         out << allHospitals[i].hosNum << " " << allHospitals[i].matchedStudent + 1 << endl;
     }
-
     out.close();
+    cout << "inputs:" << n << ", time: in ns " << duration.count() << endl;
+
     return 0;
 }
