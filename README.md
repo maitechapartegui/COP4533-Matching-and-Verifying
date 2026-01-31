@@ -23,6 +23,7 @@ To compile the code,
 
 2. Compile in VSCode (or IDE of your choosing) terminal
 * g++ -std=c++17 .\src\matcher.cpp -o matcher
+* (if using macOS: ./src/matcher.cpp -o matcher)
 * .\matcher.exe .\data\example.in
 
 - to change input file, just edit the path in the second command
