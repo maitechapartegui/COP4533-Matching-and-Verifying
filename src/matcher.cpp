@@ -152,7 +152,7 @@ int main(int argc, char** argv){
         }
         //add to the empty hospital list the hospital object
         unmatchedHospitals.push(&allHospitals[i]);
-        cout << "\n";
+        //cout << "\n";
     }
 
     // do the same for the students
@@ -169,7 +169,7 @@ int main(int argc, char** argv){
             allStudents[i].hospitalOrder[hospitalNum-1] = j;
             // cout << studentPrefs[i][j];
         }
-        cout << "\n";
+        //cout << "\n";
     }
 
 
@@ -241,21 +241,21 @@ int main(int argc, char** argv){
     out.close();
     cout << "inputs:" << n << ", time: in ns " << duration.count() << endl;
 
-    return 0;
-
     // run verifier checks after matching finishes
     if (!checkValidity(allHospitals, allStudents)) {
         cout << "INVALID" << endl;
         return 0; 
+    }
+    else{
+        cout << "VALID" << endl;
     }
 
     if (!checkStability(allHospitals, allStudents)) {
         cout << "UNSTABLE" << endl;
         return 0; 
     }
-
-    // if valid + stable, print final pairs
-    for (int i = 0; i < n; i++) {
-        cout << allHospitals[i].hosNum << " " << allHospitals[i].matchedStudent + 1 << endl;
+    else{
+        cout << "STABLE" << endl;
     }
+    return 0;
 }
