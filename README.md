@@ -34,6 +34,8 @@ To compile the code,
 - We assumed the input *n* to be a positive integer
 - We assume every candidate/hospital has a unique rank.
 
+## TASK B
+Our verifier and stability checker are written methods that run automatically at the end of the G-S algorithm, after matching finishes. Printing all final pairs, accordingly.
 
 ## TASK C
 Using the C++ <chrono> library: 
