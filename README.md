@@ -42,6 +42,6 @@ We ran a variety of different tests getting their duration in nanoseconds.
 - inputs:64, time: in ns 14250
 - inputs:128, time: in ns 40834
 
-*As you can see with the graph: our algorithm follows the O(n^2) trend. This means that it is correctly aligned with the expected trend. With n hospitals making up to $n$ proposals each, the total number of iterations is worst-case at n^2* 
+*As you can see with the graph: our algorithm follows the O(n^2) trend. This means that it is correctly aligned with the expected trend. With n hospitals making up to n proposals each, the total number of iterations is worst-case at n^2* 
 
 ![graphRuntimeImage.png](graphRuntimeImage.png)
