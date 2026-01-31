@@ -213,8 +213,21 @@ int main(int argc, char** argv){
 
     }
 
-    for(int i = 0; i < n; i++){
+    // run verifier checks after matching finishes
+    if (!checkValidity(allHospitals, allStudents)) {
+        cout << "INVALID" << endl;
+        return 0; 
+    }
+
+    if (!checkStability(allHospitals, allStudents)) {
+        cout << "UNSTABLE" << endl;
+        return 0; 
+    }
+
+    // if valid + stable, print final pairs
+    for (int i = 0; i < n; i++) {
         cout << allHospitals[i].hosNum << " " << allHospitals[i].matchedStudent + 1 << endl;
     }
+
     
 }
