@@ -224,22 +224,20 @@ int main(int argc, char** argv){
 
     }
 
-    for(int i = 0; i < n; i++){
+    // run verifier checks after matching finishes
+    if (!checkValidity(allHospitals, allStudents)) {
+        cout << "INVALID" << endl;
+        return 0; 
+    }
+
+    if (!checkStability(allHospitals, allStudents)) {
+        cout << "UNSTABLE" << endl;
+        return 0; 
+    }
+
+    // if valid + stable, print final pairs
+    for (int i = 0; i < n; i++) {
         cout << allHospitals[i].hosNum << " " << allHospitals[i].matchedStudent + 1 << endl;
     }
-    auto end = chrono::high_resolution_clock::now();
-    auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
-
-    ofstream out(outputFile);
-    if (!out) {
-        throw runtime_error("couldnt create the output file");
-    }
-
-    for (int i = 0; i < n; i++) {
-        out << allHospitals[i].hosNum << " " << allHospitals[i].matchedStudent + 1 << endl;
-    }
-    out.close();
-    cout << "inputs:" << n << ", time: in ns " << duration.count() << endl;
-
-    return 0;
+    
 }
