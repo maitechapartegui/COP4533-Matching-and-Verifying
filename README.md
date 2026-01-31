@@ -23,12 +23,12 @@ To compile the code, .......
 
 
 ## TASK C
-Using <chrono>: 
-    We started a timer that started right before the while loop and ended right after, ignoring taking in the input and out.
+Using the C++ <chrono> library: 
+- We placed the timers immediately before and after the core while loop to capture only the execution time of the Gale-Shapley algorithm, specifically excluding the time spent on file I/O (input/output).
     This was done with code like:
-    `    auto start = chrono::high_resolution_clock::now();`
-    `auto end = chrono::high_resolution_clock::now();`
-    `auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start);`
+    - `    auto start = chrono::high_resolution_clock::now();`
+    - `auto end = chrono::high_resolution_clock::now();`
+    - `auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start);`
 
 We ran a variety of different tests getting their duration in nanoseconds.
 
@@ -41,5 +41,7 @@ We ran a variety of different tests getting their duration in nanoseconds.
 - inputs:32, time: in ns 6209
 - inputs:64, time: in ns 14250
 - inputs:128, time: in ns 40834
+
+*As you can see with the graph: our algorithm follows the O(n^2) trend. This means that it is correctly aligned with the expected trend. With $n$ hospitals making up to $n$ proposals each, the total number of iterations is worstcase at $n^2$* 
 
 ![graphRuntimeImage.png](graphRuntimeImage.png)
