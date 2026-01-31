@@ -19,7 +19,10 @@ Our program is written in C++
 To compile the code, .......
 
 ### Our assumptions:
-
+- We assumed that every hospital provides a preference ranking for all *n* students, and every student ranks all *n* hospitals.
+- We assumed that this is a hospital-proposing implementation, meaning that the resulting stable matching is "hospital-optimal"
+- We assumed the input *n* to be a positive integer
+- We assume every candidate/hospital has a unique rank.
 
 
 ## TASK C
