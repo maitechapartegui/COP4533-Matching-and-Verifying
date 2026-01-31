@@ -2,7 +2,7 @@
 
 **Students: **
 Heiryn Hernandez Rojas - 90988659
-Maite Chapartegui - 
+Maite Chapartegui - 54536135
 
 ## Files
 Within src folder:
